@@ -1,0 +1,152 @@
+/* Basic styling for controls and results */
+#controls-area div {
+    margin-bottom: 10px;
+}
+
+#controls-area label {
+    margin-right: 5px;
+}
+
+#results-history-display {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    max-height: 200px; /* Added max height for scrollability */
+    overflow-y: auto; /* Added scroll for overflow */
+}
+
+#results-history-display h3 {
+    margin-top: 0; /* Remove default margin for h3 */
+}
+
+#results-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#results-list li {
+    padding: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+#results-list li:last-child {
+    border-bottom: none;
+}
+
+/* Placeholder styling for future elements */
+#roulette-wheel-display,
+#roulette-table-display {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px dashed #ccc;
+    min-height: 100px;
+}
+
+/* Styling for Analysis Sections */
+#analysis-display {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.analysis-section {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #eee;
+}
+
+.analysis-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.analysis-section h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #333;
+}
+.analysis-section h5 {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+
+.analysis-section p {
+    margin: 4px 0;
+    font-size: 0.9em;
+}
+
+.analysis-section p span {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Styling for Number Frequency Analysis */
+#number-frequency-table-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85em;
+}
+
+#number-frequency-table-content th,
+#number-frequency-table-content td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    text-align: center;
+}
+
+#number-frequency-table-content th {
+    background-color: #f2f2f2;
+}
+
+.bar-chart-bar {
+    /* display: inline-block; // Not needed if parent is flex */
+    flex-grow: 1; /* Allow bars to take space, but width will be set by JS or fixed */
+    /* width: 15px; Calculated dynamically or fixed percentage later */
+    background-color: steelblue;
+    margin-right: 1px; /* Minimal space between bars */
+    text-align: center;
+    color: white;
+    font-size: 9px; /* Smaller font for bar labels */
+    position: relative; /* For positioning labels if needed */
+    display: flex; /* To help center label */
+    flex-direction: column;
+    justify-content: flex-end; /* Label at bottom of bar */
+    overflow: hidden; /* Hide overflow from label */
+}
+
+.bar-label {
+    font-size: 9px;
+    text-align: center;
+    color: #333; /* Label for the number itself, below the bar */
+    margin-top: 2px;
+}
+
+.bar-container { /* Container for each bar and its external label */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 18px; /* Minimum width for each bar + label container */
+    margin-right: 1px;
+}
+
+/* SVG Wheel Specific Styling */
+#roulette-wheel-svg .roulette-pocket text {
+    font-family: Arial, sans-serif;
+    font-size: 10px; /* Adjust as needed */
+    text-anchor: middle;
+    dominant-baseline: middle; /* Changed from 'central' which is less supported */
+    fill: white; /* Default, can be overridden */
+    pointer-events: none; /* So they don't interfere with clicks on the pocket */
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+#roulette-wheel-svg .roulette-pocket .pocket-shape {
+    /* stroke: #777;
+    stroke-width: 0.5px; */
+    /* Base opacity, will be changed by JS */
+}

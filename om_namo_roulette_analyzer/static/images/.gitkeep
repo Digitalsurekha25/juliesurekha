@@ -1,0 +1,5 @@
+# This file is intentionally left blank.
+# It is used to ensure that Git tracks the 'images' directory,
+# even when it is empty. This directory is intended for storing
+# SVG images or other graphical assets for the European Roulette Analyzer.
+# For example, images for chips, wheel components, or other UI elements.
