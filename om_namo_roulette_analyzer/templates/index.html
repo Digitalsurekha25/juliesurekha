@@ -34,9 +34,16 @@
             <button id="add-result-button">Add Result</button>
         </div>
         <div>
+            <label for="current-dealer-input" style="margin-right: 5px;">Current Dealer:</label>
+            <input type="text" id="current-dealer-input" value="Dealer 1" style="margin-right: 10px;">
             <button id="reset-data-button">Reset All Data</button>
         </div>
         <div>
+            <label for="dealer-filter-select" style="margin-right: 5px;">Filter by Dealer:</label>
+            <select id="dealer-filter-select" style="margin-right: 10px;">
+                <option value="all">All Dealers</option>
+                <!-- JS will populate other options -->
+            </select>
             <label>Analyze Last N Results:</label>
             <input type="radio" name="range_filter" value="3" id="range_3"> <label for="range_3">3</label>
             <input type="radio" name="range_filter" value="5" id="range_5"> <label for="range_5">5</label>
@@ -77,6 +84,16 @@
     <div id="results-history-display">
         <h3>Entered Results:</h3>
         <ul id="results-list"></ul>
+    </div>
+
+    <div id="history-panel-section" class="main-section-container" style="margin-top: 20px; padding: 10px; border: 1px solid #bbb;">
+        <h3>Full Results History</h3>
+        <div id="history-panel-controls">
+            <!-- (Currently respects global dealer filter, no new filters here yet) -->
+        </div>
+        <div id="history-panel-content" style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-top:5px; background-color: #fdfdfd;">
+            <!-- JS will populate this with a list or table -->
+        </div>
     </div>
 
     <div id="analysis-display">
@@ -180,6 +197,46 @@
             <p>Recent Gaps (Last 10): <span id="recent-gaps-display">N/A</span></p>
             <!-- Optional: Placeholder for gap frequency display later -->
             <!-- <div id="gap-frequency-display"></div> -->
+        </div>
+        <div id="direction-pattern-analysis" class="analysis-section">
+            <h4>Direction Pattern Analysis (Based on All Gaps)</h4>
+            <p>Clockwise Jumps: Count: <span id="clockwise-gaps-count">0</span>, Pct: <span id="clockwise-gaps-percentage">0.00</span>%</p>
+            <p>Anti-Clockwise Jumps: Count: <span id="anti-clockwise-gaps-count">0</span>, Pct: <span id="anti-clockwise-gaps-percentage">0.00</span>%</p>
+            <p>Same Number Hits (0 Gap): Count: <span id="same-number-gaps-count">0</span>, Pct: <span id="same-number-gaps-percentage">0.00</span>%</p>
+            <p>Total Gaps Analyzed: <span id="total-gaps-analyzed">0</span></p>
+        </div>
+        <div id="wheel-sextants-analysis" class="analysis-section">
+            <h4>Broad Wheel Sector Analysis (Sextants)</h4>
+            <div id="wheel-sextants-content">
+                <!-- JS will populate this with list of sextant frequencies -->
+            </div>
+        </div>
+        <div id="digit-sum-analysis" class="analysis-section">
+            <h4>Digit Sum Group Analysis</h4>
+            <div id="digit-sum-content">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+        <div id="sum-influence-analysis" class="analysis-section">
+            <h4>Sum of Recent Results & Next Hit's Groups</h4>
+            <p id="sum2-next-display">Sum of last 2: N/A</p>
+            <p id="sum3-next-display">Sum of last 3: N/A</p>
+        </div>
+        <div id="sector-influence-analysis" class="analysis-section">
+            <h4>Sector Influence Analysis</h4>
+            <p id="sector-influence-display">N/A (Not enough results)</p>
+        </div>
+        <div id="cluster-prediction-analysis" class="analysis-section">
+            <h4>Statistical Cluster Spotlight (Dozens & Columns)</h4>
+            <p style="font-size:0.8em; font-style:italic; margin-bottom:5px;">Note: Identifies Dozens/Columns hitting significantly above average in the current view.</p>
+            <div id="hot-dozens-prediction" style="margin-bottom:3px;">Hot Dozens (Trending): N/A</div>
+            <div id="hot-columns-prediction">Hot Columns (Trending): N/A</div>
+        </div>
+        <div id="group-pattern-alerts-analysis" class="analysis-section">
+            <h4>Group Pattern Alerts (3 Consecutive)</h4>
+            <div id="group-pattern-alerts-content">
+                <!-- JS will populate this -->
+            </div>
         </div>
         <div id="basic-properties-analysis" class="analysis-section">
             <h4>Basic Properties Analysis</h4>

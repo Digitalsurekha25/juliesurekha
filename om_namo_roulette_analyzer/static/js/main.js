@@ -2,96 +2,57 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // Input Elements & DOM references (condensed)
-    const winningNumberInput = document.getElementById('winning-number-input'); /* ... */
-    const addResultButton = document.getElementById('add-result-button');
-    // ... other inputs ...
-    const resultsList = document.getElementById('results-list');
+    const addResultButton = document.getElementById('add-result-button'); /* ... */
+    const resultsList = document.getElementById('results-list'); // This is the short "Entered Results" list
 
     // DOM Elements for analysis sections (condensed)
-    const hotNumbersDisplaySpan = document.getElementById('hot-numbers-display'); /* ... */
-    const coldNumbersDisplaySpan = document.getElementById('cold-numbers-display');
-    const repeatPatternsContentDiv = document.getElementById('repeat-patterns-content');
-    const recentGapsDisplaySpan = document.getElementById('recent-gaps-display');
+    const groupPatternAlertsContentDiv = document.getElementById('group-pattern-alerts-content'); /* ... */
+    const historyPanelContentDiv = document.getElementById('history-panel-content'); // New
     // ... (other analysis span/div references) ...
     const finalesAChevalAnalysisContentDiv = document.getElementById('finales-a-cheval-analysis-content');
 
     let results = [];
+    let currentDealerFilter = 'all';
     let currentCenterNumber = 0;
     let currentNeighbourCount = 2;
     let customNumberSets = [];
-    const DEFAULT_HOT_COLD_COUNT = 5;
-    const N_FOR_SECTION_REPEAT = [2, 3];
+    // ... (Constants like DEFAULT_HOT_COLD_COUNT, etc.)
 
-    // Number Group Definitions
-    const wheelSequence = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
-    const numberToIndexMap = new Map(wheelSequence.map((num, index) => [num, index]));
-    const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-    const blackNumbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
-    // ... other definitions ...
+    // Number Group Definitions (condensed)
+    // ...
 
     // --- Utility Functions (condensed) ---
-    const getNeighbourNumbers = (centerNum, neighbourCt) => { /* ... */ return []; };
-    // ... other utility functions ...
+    // ...
 
     // --- Analysis Functions (condensed) ---
-    const analyzeBasicProperties = (r) => { /* ... */ return { red:{}, black:{}, even:{}, odd:{}, low:{}, high:{}, zeroCount:0};};
-    const analyzeRepeatPatterns = (fullResultsArray) => { /* ... */ return {backToBackSame: null, prevIsNeighbour: null, sectionRepeats: [] }; };
-    const analyzeHotColdNumbers = (resultsArray, numToShow = DEFAULT_HOT_COLD_COUNT) => { /* ... */ return {hot:[], cold:[]}; };
-    const analyzeNumberFrequency = (r) => ([]);
-    const analyzeStreaksAndFlips = (r) => ({redBlack:{}, evenOdd:{}, highLow:{}});
-    const analyzeFinalesACheval = (r) => ([]); /* ... */
-
-    const analyzeBallLandingGaps = (fullResultsArray) => {
-        if (fullResultsArray.length < 2) {
-            return { allGaps: [], recentGaps: [] };
-        }
-        const gaps = [];
-        for (let i = 1; i < fullResultsArray.length; i++) {
-            const num1 = fullResultsArray[i-1];
-            const num2 = fullResultsArray[i];
-
-            const index1 = numberToIndexMap.get(num1);
-            const index2 = numberToIndexMap.get(num2);
-
-            if (index1 === undefined || index2 === undefined) { // Should not happen with valid numbers
-                console.warn(`Undefined index for numbers: ${num1} or ${num2}`);
-                continue;
-            }
-
-            const clockwiseDistance = (index2 - index1 + wheelSequence.length) % wheelSequence.length;
-            // Anti-clockwise distance is total length minus clockwise, unless clockwise is 0 (same number)
-            // No, simpler: (index1 - index2 + length) % length
-            const antiClockwiseDistance = (index1 - index2 + wheelSequence.length) % wheelSequence.length;
-
-            let gapValue = 0;
-            if (clockwiseDistance <= antiClockwiseDistance) {
-                gapValue = clockwiseDistance;
-            } else {
-                gapValue = -antiClockwiseDistance; // Negative for anti-clockwise
-            }
-            // If num1 and num2 are the same, both distances are 0. clockwiseDistance <= antiClockwiseDistance is true, so gapValue = 0. Correct.
-            gaps.push({ from: num1, to: num2, gap: gapValue });
-        }
-        return { allGaps: gaps, recentGaps: gaps.slice(-10) };
-    };
+    const analyzeGroupPatternAlerts = (fullRO) => ([]); /* ... */
+    // ... other analysis functions ...
 
     // --- Display Functions (condensed) ---
-    const displayBasicPropertiesAnalysis = (d) => { /* ... */ };
-    const displayRepeatPatterns = (d) => { repeatPatternsContentDiv.innerHTML = '';};
-    const displayHotColdNumbers = (d) => { /* ... */ };
-    const displayNumberFrequencyAnalysis = (d) => { /* ... */ };
-    const displayStreaksAndFlips = (d) => { /* ... */ };
-    const displayFinalesAChevalAnalysis = (d) => { finalesAChevalAnalysisContentDiv.innerHTML = '';}; /* ... */
+    const displayGroupPatternAlerts = (d) => {}; /* ... */
+    // ... other display functions ...
 
-    const displayBallLandingGaps = (analysisData) => {
-        if (!analysisData || !analysisData.recentGaps || analysisData.recentGaps.length === 0) {
-            recentGapsDisplaySpan.textContent = 'N/A (Not enough results)';
+    const renderFullHistoryPanel = (dealerFilteredHistoryObjects) => {
+        historyPanelContentDiv.innerHTML = ''; // Clear previous content
+
+        if (!dealerFilteredHistoryObjects || dealerFilteredHistoryObjects.length === 0) {
+            historyPanelContentDiv.innerHTML = '<p style="font-style: italic;">No results to show for selected dealer.</p>';
             return;
         }
-        const gapStrings = analysisData.recentGaps.map(g =>
-            `${g.gap > 0 ? '+' : ''}${g.gap} (${g.from}→${g.to})`
-        );
-        recentGapsDisplaySpan.textContent = gapStrings.join(', ');
+
+        const ul = document.createElement('ul');
+        ul.style.cssText = 'list-style-type: none; padding-left: 0; font-size: 0.9em;';
+
+        // Displaying in chronological order (oldest first)
+        dealerFilteredHistoryObjects.forEach((result, index) => {
+            const li = document.createElement('li');
+            li.style.borderBottom = '1px dashed #eee';
+            li.style.padding = '4px 0';
+            const dateStr = new Date(result.timestamp).toLocaleString();
+            li.innerHTML = `<strong>#${index + 1}:</strong> ${result.number} (Dealer: ${result.dealer || 'N/A'}, Time: ${dateStr})`;
+            ul.appendChild(li);
+        });
+        historyPanelContentDiv.appendChild(ul);
     };
 
     // --- Custom Sets Logic (condensed) ---
@@ -99,46 +60,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // ... other custom set functions ...
 
     // --- Core Logic ---
-    const getFilteredResults = () => {
-        const val = document.querySelector('input[name="range_filter"]:checked').value;
-        return val === 'all' || isNaN(parseInt(val)) ? results : results.slice(-parseInt(val));
+    const getFilteredResults = () => { /* ... returns array of numbers ... */
+        const dealerFilterSelect = document.getElementById('dealer-filter-select');
+        currentDealerFilter = dealerFilterSelect ? dealerFilterSelect.value : 'all';
+        let filteredByDealer = results;
+        if (currentDealerFilter !== 'all') {
+            filteredByDealer = results.filter(resObj => resObj.dealer === currentDealerFilter);
+        }
+        const selectedRange = document.querySelector('input[name="range_filter"]:checked').value;
+        let rangeFilteredObjects = (selectedRange === 'all' || isNaN(parseInt(selectedRange))) ?
+            filteredByDealer : filteredByDealer.slice(-parseInt(selectedRange, 10));
+        return rangeFilteredObjects.map(resultObj => resultObj.number);
+    };
+    const getFilteredResultObjects = () => { /* ... returns array of objects ... */
+         const dealerFilterSelect = document.getElementById('dealer-filter-select');
+         currentDealerFilter = dealerFilterSelect ? dealerFilterSelect.value : 'all';
+         let filteredByDealer = results;
+        if (currentDealerFilter !== 'all') {
+            filteredByDealer = results.filter(resObj => resObj.dealer === currentDealerFilter);
+        }
+        const selectedRange = document.querySelector('input[name="range_filter"]:checked').value;
+        return (selectedRange === 'all' || isNaN(parseInt(selectedRange))) ?
+            filteredByDealer : filteredByDealer.slice(-parseInt(selectedRange, 10));
     };
 
     const runAllAnalyses = () => {
-        const currentFilteredResults = getFilteredResults();
-        // Call all existing analysis display functions (condensed)
-        displayBasicPropertiesAnalysis(analyzeBasicProperties(currentFilteredResults));
-        displayNumberFrequencyAnalysis(analyzeNumberFrequency(currentFilteredResults));
-        displayHotColdNumbers(analyzeHotColdNumbers(currentFilteredResults, DEFAULT_HOT_COLD_COUNT));
-        displayRepeatPatterns(analyzeRepeatPatterns(results));
-        displayStreaksAndFlips(analyzeStreaksAndFlips(currentFilteredResults));
-        displayBallLandingGaps(analyzeBallLandingGaps(results)); // New, uses full results
+        const currentFilteredNumbers = getFilteredResults();
+        const currentFilteredObjects = getFilteredResultObjects(); // Used for the short results list display
+
+        let fullHistoryForSelectedDealerObjects = results;
+        if (currentDealerFilter !== 'all') {
+            fullHistoryForSelectedDealerObjects = results.filter(resObj => resObj.dealer === currentDealerFilter);
+        }
+
+        // ... (call all other display(analyze...()) functions for the main analysis panel) ...
+        // Example: displayBasicPropertiesAnalysis(analyzeBasicProperties(currentFilteredNumbers));
+        // displayGroupPatternAlerts(analyzeGroupPatternAlerts(fullHistoryForSelectedDealerObjects));
+
+        renderFullHistoryPanel(fullHistoryForSelectedDealerObjects); // New: Render full history panel
 
         renderCustomSetsAndAnalysis();
+        const dealerFilterSelect = document.getElementById('dealer-filter-select');
+        if(dealerFilterSelect) populateDealerFilter();
     };
 
-    const renderResultsList = () => { /* ... */ };
-    const loadResults = () => { /* ... */
-        const stored = localStorage.getItem('rouletteResults');
-        if (stored) { results = JSON.parse(stored); }
-        // Initialize neighbour bet inputs (if they exist)
-        const neighbourCenterInput = document.getElementById('neighbour-center-number');
-        const neighbourCountInput = document.getElementById('neighbour-count');
-        if (neighbourCenterInput && neighbourCountInput) {
-            currentCenterNumber = parseInt(neighbourCenterInput.value, 10);
-            currentNeighbourCount = parseInt(neighbourCountInput.value, 10);
-        }
-        loadCustomSets();
-        renderResultsList();
-        runAllAnalyses();
+    const populateDealerFilter = () => { /* ... */ };
+    const renderResultsList = () => { // This is for the short "Entered Results" list
+        resultsList.innerHTML = '';
+        const objectsToDisplay = getFilteredResultObjects();
+        objectsToDisplay.slice().reverse().forEach(resultObj => { // Newest first for this list
+            const li = document.createElement('li');
+            li.textContent = `N: ${resultObj.number} (D: ${resultObj.dealer || 'N/A'})`;
+            resultsList.appendChild(li);
+        });
     };
+    const loadResults = () => { /* ... */ runAllAnalyses(); };
+    const createWheelSVG = () => { /* ... */ };
 
     // --- Event Listeners (condensed) ---
-    addResultButton.addEventListener('click', () => { /* ... */ });
-    resetDataButton.addEventListener('click', () => { /* ... */ });
-    rangeFilterRadios.forEach(radio => radio.addEventListener('change', () => { /* ... */ }));
+    addResultButton.addEventListener('click', () => { /* ... */ runAllAnalyses(); });
     // ... other listeners ...
 
-    // Initial load
     loadResults();
 });
